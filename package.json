@@ -7,6 +7,8 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@ag-grid-community/all-modules": "^22.0.0",
+    "@ag-grid-community/vue": "^22.0.0",
     "bulma": "^0.8.0",
     "core-js": "^3.3.2",
     "datatables.net": "^1.10.20",
@@ -15,6 +17,8 @@
     "vue": "^2.6.10",
     "vue-datatables": "^0.1.4",
     "vue-jquery": "^1.0.6",
+    "vue-property-decorator": "^8.3.0",
+    "vuelidate": "^0.7.4",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

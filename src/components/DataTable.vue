@@ -1,41 +1,34 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
+    <!-- <th>Név</th>
+    <th>Típus</th>
+    <th>Tagság</th>
+    <th>Fizetési mód</th>
+    <th>Bankszámlaszám</th>-->
     <div class="row">
-      <table id="dataTable" class="display">
-        <thead>
-          <tr>
-            <th>Név</th>
-            <th>Típus</th>
-            <th>Tagság</th>
-            <th>Fizetési mód</th>
-            <th>Bankszámlaszám</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            :key="partner.bank_account"
-            v-for="partner in this.getTableData"
-            @click="modifyData($event)"
-          >
-            <td>{{ partner.name }}</td>
-            <td>{{ partner.type }}</td>
-            <td>{{ partner.partnership }}</td>
-            <td>{{ partner.payment_type }}</td>
-            <td>{{ partner.bank_account }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <ag-grid-vue
+        style="width: 100%; height: 500px;"
+        class="ag-theme-material"
+        :columnDefs="columnDefs"
+        :rowData="rowData"
+        :modules="modules"
+        :gridOptions="gridOptions"
+      ></ag-grid-vue>
     </div>
+
     <div class="row">
-      <button class="button">Új partner</button>
+      <button class="button" @click="createData()">Új partner</button>
+      <button class="button" @click="refreshData()">Frissítés</button>
     </div>
     <app-modal v-if="formOpen" @formWasClosed="formOpen = $event" />
   </div>
 </template>
 
 <script>
-import $ from "jquery";
-import dataTable from "datatables.net-bs";
+import "@ag-grid-community/all-modules/dist/styles/ag-grid.css";
+import "@ag-grid-community/all-modules/dist/styles/ag-theme-material.css";
+import { AgGridVue } from "@ag-grid-community/vue";
+import { AllCommunityModules } from "@ag-grid-community/all-modules";
 import Modal from "./Modal";
 import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
@@ -43,44 +36,56 @@ export default {
   data() {
     return {
       formOpen: false,
-      table: ""
+      table: "",
+      columnDefs: [
+        { headerName: "Név", field: "name", sortable: true },
+        { headerName: "Típus", field: "type", sortable: true },
+        { headerName: "Tagság", field: "partnership", sortable: true },
+        { headerName: "Fizetési mód", field: "payment_type", sortable: true },
+        { headerName: "Bankszámlaszám", field: "bank_account", sortable: true }
+      ],
+      rowData: null,
+      gridOptions: {
+        onRowClicked: row => {
+          const selectedRow = row.data;
+          this.formOpen = !this.formOpen;
+          this.selectedRowIndexAction(row.rowIndex);
+          this.selectRowAction(selectedRow);
+        }
+      },
+      modules: AllCommunityModules
     };
   },
   computed: {
     ...mapGetters(["getTableData", "getSelectedRow"])
   },
   methods: {
-    ...mapActions(["selectRowAction"]),
-    initDataTable() {
-      return $("#dataTable").DataTable({
-        searching: false,
-        paging: false
-      });
-    },
-    modifyData(event) {
+    ...mapActions(["selectRowAction", "selectedRowIndexAction"]),
+    createData() {
       this.formOpen = !this.formOpen;
-
-      // console.log(event.target.parentNode);
-      var selectedRow = this.table.row(event.target.parentNode).data();
-      console.log(selectedRow);
-      // this.table.draw();
-      this.selectRowAction(selectedRow); //itt lő egy actiont
-
-      // console.log(this.getSelectedRow);
+      this.selectRowAction([]);
+    },
+    refreshData() {
+      this.rowData = this.getTableData;
     }
   },
-  // watch: {
-  //   getTableData: function(oldValue, newValue) {
-  //     this.initDataTable();
-  //   }
-  // },
   mounted() {
-    this.table = this.initDataTable();
+    this.rowData = this.getTableData;
   },
   components: {
-    appModal: Modal
+    appModal: Modal,
+    AgGridVue
+  },
+  watch: {
+    getTableData(newValue, oldValue) {
+      this.rowData = this.getTableData;
+    }
   }
 };
 </script>
 
-<style></style>
+<style scoped>
+.row {
+  margin-bottom: 20px;
+}
+</style>

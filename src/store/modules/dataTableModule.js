@@ -15,7 +15,8 @@ const state = {
       bank_account: "2222-2222-2222-2222"
     }
   ],
-  selectedRow: []
+  selectedRow: [],
+  selectedRowIndex: 0
 };
 
 const getters = {
@@ -24,6 +25,9 @@ const getters = {
   },
   getSelectedRow: state => {
     return state.selectedRow;
+  },
+  getSelectedRowIndex: state => {
+    return state.selectedRowIndex;
   }
 };
 
@@ -32,10 +36,17 @@ const mutations = {
     state.selectedRow = payload;
   },
   saveEditedRowMutation: (state, payload) => {
-    state.tableData = [...state.tableData, payload];
+    console.log(payload[1].index);
+    var newTableData = state.tableData.filter(
+      (item, index) => index !== payload[1].index
+    );
+    state.tableData = [...newTableData, payload[0]];
   },
   createRowMutation: (state, payload) => {
     state.tableData = [...state.tableData, payload];
+  },
+  selectedRowIndexMutation: (state, payload) => {
+    state.selectedRowIndex = payload;
   }
 };
 
@@ -48,6 +59,9 @@ const actions = {
   },
   createRowAction: ({ commit }, payload) => {
     commit("createRowMutation", payload);
+  },
+  selectedRowIndexAction: ({ commit }, payload) => {
+    commit("selectedRowIndexMutation", payload);
   }
 };
 
