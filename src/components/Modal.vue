@@ -1,13 +1,17 @@
 <template>
-  <div class="modal" :class="{ 'is-active' : isActive}">
+  <div class="modal" :class="{ 'is-active': isActive }">
     <div class="modal-background" @click="closeModal()"></div>
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">Partner szerkesztése</p>
-        <button class="delete" aria-label="close" @click="closeModal()"></button>
+        <button
+          class="delete"
+          aria-label="close"
+          @click="closeModal()"
+        ></button>
       </header>
       <section class="modal-card-body">
-        <app-partner-form />
+        <app-partner-form @closeAfterSubmit="closeModal()" />
       </section>
     </div>
   </div>
@@ -35,5 +39,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

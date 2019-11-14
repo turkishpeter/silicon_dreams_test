@@ -5,7 +5,7 @@
     <th>Tagság</th>
     <th>Fizetési mód</th>
     <th>Bankszámlaszám</th>-->
-    <div class="row">
+    <div class="row" style="overflow: hidden">
       <ag-grid-vue
         style="width: 100%; height: 500px;"
         class="ag-theme-material"
@@ -18,7 +18,6 @@
 
     <div class="row">
       <button class="button" @click="createData()">Új partner</button>
-      <button class="button" @click="refreshData()">Frissítés</button>
     </div>
     <app-modal v-if="formOpen" @formWasClosed="formOpen = $event" />
   </div>
@@ -38,7 +37,11 @@ export default {
       formOpen: false,
       table: "",
       columnDefs: [
-        { headerName: "Név", field: "name", sortable: true },
+        {
+          headerName: "Név",
+          field: "name",
+          sortable: true
+        },
         { headerName: "Típus", field: "type", sortable: true },
         { headerName: "Tagság", field: "partnership", sortable: true },
         { headerName: "Fizetési mód", field: "payment_type", sortable: true },
@@ -51,6 +54,9 @@ export default {
           this.formOpen = !this.formOpen;
           this.selectedRowIndexAction(row.rowIndex);
           this.selectRowAction(selectedRow);
+        },
+        rowStyle: {
+          width: "100%"
         }
       },
       modules: AllCommunityModules
@@ -64,9 +70,6 @@ export default {
     createData() {
       this.formOpen = !this.formOpen;
       this.selectRowAction([]);
-    },
-    refreshData() {
-      this.rowData = this.getTableData;
     }
   },
   mounted() {

@@ -4,14 +4,14 @@
       <label class="label">Név</label>
       <div class="control">
         <input
-          :class="{ 'is-danger': !$v.name.required }"
+          :class="{ 'is-danger': submitStatus && !$v.name.required }"
           class="input"
           type="text"
           placeholder="Név"
           v-model.lazy="$v.name.$model"
         />
       </div>
-      <p v-if="!$v.name.required" class="help is-danger">
+      <p v-if="submitStatus && !$v.name.required" class="help is-danger">
         A név mező kitöltése kötelező!
       </p>
     </div>
@@ -25,7 +25,7 @@
         <input type="checkbox" value="szállító" v-model.lazy="$v.type.$model" />
         Szállító
       </label>
-      <p v-if="!$v.type.required" class="help is-danger">
+      <p v-if="submitStatus && !$v.type.required" class="help is-danger">
         A típus megadása kötelező
       </p>
     </div>
@@ -60,7 +60,7 @@
           EU-n kívül
         </label>
       </div>
-      <p v-if="!$v.partnership.required" class="help is-danger">
+      <p v-if="submitStatus && !$v.partnership.required" class="help is-danger">
         Tagság megadása kötelező!
       </p>
     </div>
@@ -72,6 +72,12 @@
           <option value="money">Készpénz</option>
         </select>
       </div>
+      <p
+        v-if="submitStatus && !$v.payment_type.required"
+        class="help is-danger"
+      >
+        Fizetési mód megadása kötelező!
+      </p>
     </div>
     <div class="field">
       <label class="label">Bankszámlaszám</label>
@@ -84,19 +90,22 @@
           v-model.lazy="$v.bank_account.$model"
         />
       </div>
-      <p v-if="!$v.bank_account.required" class="help is-danger">
+      <p
+        v-if="submitStatus && !$v.bank_account.required"
+        class="help is-danger"
+      >
         Bankszámlaszám megadása kötelező!
       </p>
-      <p v-if="!$v.bank_account.minLength" class="help is-danger">
+      <p
+        v-if="submitStatus && !$v.bank_account.minLength"
+        class="help is-danger"
+      >
         A bankszámlaszám minimális hossza 20 karakter!
       </p>
     </div>
     <div class="field">
       <button class="button is-success" @click.prevent="saveRow()">
         Mentés
-      </button>
-      <button class="button is-success" @click.prevent="resetTouch()">
-        Reset touched
       </button>
     </div>
   </form>
@@ -138,6 +147,7 @@ export default {
   methods: {
     ...mapActions(["saveEditedRowAction", "createRowAction"]),
     saveRow() {
+      this.submitStatus = true;
       this.$v.$touch();
       if (this.$v.$invalid) {
         this.submitStatus = "ERROR";
@@ -160,10 +170,11 @@ export default {
         } else {
           this.saveEditedRowAction(rowData);
         }
+        this.closeAfterSubmit();
       }
     },
-    resetTouch() {
-      this.$v.$reset();
+    closeAfterSubmit() {
+      this.$emit("closeAfterSubmit");
     }
   },
   computed: {

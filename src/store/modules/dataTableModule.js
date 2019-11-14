@@ -5,14 +5,21 @@ const state = {
       type: "szállító",
       partnership: "belföld",
       payment_type: "online",
-      bank_account: "4444-4444-4444-4444"
+      bank_account: "2222-2222-2222-2222-2222"
     },
     {
       name: "Kiss Anna Bella",
       type: "vevő",
       partnership: "eu",
       payment_type: "money",
-      bank_account: "2222-2222-2222-2222"
+      bank_account: "4444-4444-4444-4444-4444"
+    },
+    {
+      name: "Heves Marci",
+      type: "vevő",
+      partnership: "belföld",
+      payment_type: "money",
+      bank_account: "5555-5555-5555-5555-5555"
     }
   ],
   selectedRow: [],
